@@ -94,7 +94,8 @@ server.registerTool(
           content: [
             {
               type: 'text',
-              text: result.htmlSnippet
+              text: result.htmlSnippet,
+              mimeType: 'text/html'
             }
           ]
         };
