@@ -17,13 +17,17 @@ const transport = transportArg?.split('=')[1] || 'stdio';
 const port = parseInt(process.env.PORT || portArg?.split('=')[1] || '3000', 10);
 
 // Create MCP server instance
-const server = new McpServer({
-  name: "@ax-crew/chartjs-mcp-server",
-  version: "3.1.12",
-  capabilities: {
-    tools: {},
+const server = new McpServer(
+  {
+    name: "@ax-crew/chartjs-mcp-server",
+    version: "3.1.12",
   },
-});
+  {
+    capabilities: {
+      tools: {},
+    },
+  }
+);
 
 // Validation function for chart configuration
 function validateChartConfig(chartConfig: any) {

@@ -42,6 +42,10 @@ heroku stack:set heroku-24 -a $APP_NAME || true
 # Ensure Node.js buildpack is set
 heroku buildpacks:set heroku/nodejs -a $APP_NAME || true
 
+# Clear Heroku build cache
+echo "🧹 Clearing Heroku build cache..."
+heroku config:set NODE_MODULES_CACHE=false -a $APP_NAME || true
+
 # Commit Procfile if needed
 if [ -n "$(git status --porcelain Procfile)" ]; then
     git add Procfile
@@ -50,21 +54,29 @@ if [ -n "$(git status --porcelain Procfile)" ]; then
 fi
 
 # Sync package-lock.json with package.json
-echo "📦 Syncing package-lock.json..."
+echo "📦 Regenerating package-lock.json..."
 rm -rf node_modules package-lock.json
 npm install
 
-# Commit package-lock.json if needed
-if [ -n "$(git status --porcelain package-lock.json)" ]; then
-    git add package-lock.json
+# Force add and commit package-lock.json
+git add package-lock.json
+if git diff --cached --quiet package-lock.json; then
+    echo "📦 package-lock.json unchanged."
+else
     git commit -m "Sync package-lock.json for Heroku deployment"
-    git push origin $BRANCH_TO_DEPLOY
-    echo "✅ Committed and pushed package-lock.json."
+    echo "✅ Committed package-lock.json."
 fi
 
-# Push to Heroku
+# Push to origin first
+echo "📤 Pushing to origin..."
+git push origin $BRANCH_TO_DEPLOY || true
+
+# Push to Heroku with force to ensure latest code
 echo "📤 Pushing branch '$BRANCH_TO_DEPLOY' to Heroku..."
-git push heroku $BRANCH_TO_DEPLOY:main
+git push heroku $BRANCH_TO_DEPLOY:main --force
+
+# Re-enable cache for future deploys
+heroku config:set NODE_MODULES_CACHE=true -a $APP_NAME || true
 
 echo ""
 echo "✅ Deployment to Heroku app '$APP_NAME' complete!"
@@ -77,4 +89,3 @@ echo "   2. Open the app:"
 echo "      heroku open -a $APP_NAME"
 echo ""
 echo "🔗 MCP endpoint: https://$APP_NAME.herokuapp.com/mcp"
-
