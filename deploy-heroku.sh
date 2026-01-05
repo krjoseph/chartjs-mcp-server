@@ -51,13 +51,15 @@ fi
 
 # Sync package-lock.json with package.json
 echo "📦 Syncing package-lock.json..."
-npm install --package-lock-only
+rm -rf node_modules package-lock.json
+npm install
 
 # Commit package-lock.json if needed
 if [ -n "$(git status --porcelain package-lock.json)" ]; then
     git add package-lock.json
     git commit -m "Sync package-lock.json for Heroku deployment"
-    echo "✅ Committed package-lock.json."
+    git push origin $BRANCH_TO_DEPLOY
+    echo "✅ Committed and pushed package-lock.json."
 fi
 
 # Push to Heroku
