@@ -138,7 +138,7 @@ server.registerTool(
         // Fallback - shouldn't happen
         return {
           content: [
-            { type: "text", text: result.message, mimeType: 'text/plain' }
+            { type: "text", text: result.message, }
           ]
         };
       }
