@@ -44,6 +44,9 @@ npx @ax-crew/chartjs-mcp-server
 
 # or if installed locally/globally
 chartjs-mcp-server
+
+# Run with streamable-http transport (for remote/web clients)
+npx @ax-crew/chartjs-mcp-server --transport=streamable-http --port=3000
 ```
 
 ## 🎯 What This Does
@@ -171,6 +174,41 @@ Add to your Cursor settings or workspace configuration:
     }
   }
 }
+```
+
+### Using Streamable HTTP Transport
+
+For remote or web-based MCP clients, you can run the server with the streamable-http transport:
+
+```bash
+# Start the server with HTTP transport
+npx @ax-crew/chartjs-mcp-server --transport=streamable-http
+
+# Specify a custom port (default: 3000)
+npx @ax-crew/chartjs-mcp-server --transport=streamable-http --port=8080
+```
+
+The server exposes the following endpoints:
+- `POST /mcp` - MCP protocol endpoint (JSON-RPC over HTTP with SSE streaming)
+- `GET /mcp` - SSE stream for server-initiated messages
+- `DELETE /mcp` - Session termination
+- `GET /health` - Health check endpoint
+
+**Configure your MCP client with the HTTP URL:**
+
+```json
+{
+  "mcpServers": {
+    "chartjs": {
+      "url": "http://localhost:3000/mcp"
+    }
+  }
+}
+```
+
+For clients that require a proxy (like older versions of Cursor or VS Code):
+```bash
+npx -y mcp-remote http://localhost:3000/mcp
 ```
 
 ### Alternative: Install from Source
@@ -310,10 +348,15 @@ cd chartjs-mcp-server
 npm install
 
 # Development workflow
-npm run dev          # Watch mode for development
+npm run dev          # Watch mode for development (stdio)
+npm run dev:http     # Development with HTTP transport
 npm test            # Run tests
 npm run build       # Build for production
 npm run test:watch  # Test in watch mode
+
+# Production
+npm start            # Run with stdio transport
+npm run start:http   # Run with HTTP transport on port 3000
 ```
 
 ### Project Structure
