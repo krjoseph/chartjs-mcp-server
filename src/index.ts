@@ -111,6 +111,9 @@ server.registerTool(
               type: "text",
               text: result.htmlSnippet,
               mimeType: "text/html",
+              _meta: {
+                mimeType: "text/html",
+              }
             }
           ]
         };
