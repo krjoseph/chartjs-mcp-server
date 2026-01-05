@@ -14,7 +14,7 @@ const transportArg = args.find(arg => arg.startsWith('--transport='));
 const portArg = args.find(arg => arg.startsWith('--port='));
 
 const transport = transportArg?.split('=')[1] || 'stdio';
-const port = parseInt(portArg?.split('=')[1] || '3000', 10);
+const port = parseInt(process.env.PORT || portArg?.split('=')[1] || '3000', 10);
 
 // Create MCP server instance
 const server = new McpServer({
