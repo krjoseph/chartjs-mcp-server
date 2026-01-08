@@ -1,7 +1,7 @@
 {
   "name": "@ax-crew/chartjs-mcp-server",
   "description": "A Model Context Protocol server for generating beautiful charts using Chart.js v4. Perfect for Claude Desktop, Cursor, and other MCP clients.",
-  "version": "3.1.10",
+  "version": "3.1.12",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -16,8 +16,12 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
+    "start:http": "node dist/index.js --transport=streamable-http",
+    "start:http:port": "node dist/index.js --transport=streamable-http --port=",
     "dev": "ts-node src/index.ts",
+    "dev:http": "ts-node src/index.ts --transport=streamable-http",
     "watch": "nodemon --exec ts-node src/index.ts",
+    "watch:http": "nodemon --exec 'ts-node src/index.ts --transport=streamable-http'",
     "test": "node --test test/chart-server.test.js",
     "test:watch": "node --test --watch test/chart-server.test.js",
     "test:integration": "node --test test/integration.test.js",
@@ -58,10 +62,11 @@
     "access": "public"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.13.3",
+    "@modelcontextprotocol/sdk": "^1.25.1",
     "canvas": "^3.1.2",
-    "chart.js": "^4.5.0",
-    "zod": "^3.23.8"
+    "chart.js": "^4.5.1",
+    "hono": "^4.11.3",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@types/node": "^24.0.10",
